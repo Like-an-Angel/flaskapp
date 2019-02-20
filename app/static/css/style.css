@@ -1,0 +1,9 @@
+html, body {
+    background-color: #eee;
+    box-sizing: border-box;
+}
+
+.bd{
+    box-shadow: 7px 7px 24px 0px rgba(0,0,0,0.75);
+    border-radius: 5px;
+}

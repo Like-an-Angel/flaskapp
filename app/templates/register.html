@@ -1,0 +1,78 @@
+<!-- we have here a reg_form input variable -->
+{% extends 'main_layout.html' %}
+{% block content %}
+<div class="row">
+    <!-- class="col-5 mx-auto" means 5 out of 12 columns -->
+    <!-- sm means that in smallscreen it will expand, bigger -->
+    <div class="col-sm-5 mx-auto bd p-3">
+        <div class="text-center">
+            <h1>Registration</h1>
+        </div>
+        <form method="post">
+            {{ reg_form.hidden_tag() }}
+            <div class="form-group">
+                <!-- We use here a BOOTSTRAP classes -->
+                {{ reg_form.username.label(class="form-control-label") }}
+                {% if reg_form.username.errors %}
+                    {{ reg_form.username(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for err in reg_form.username.errors %}
+                            <span>{{ err }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ reg_form.username(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ reg_form.email.label(class="form-control-label") }}
+                {% if reg_form.email.errors %}
+                    {{ reg_form.email(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for err in reg_form.email.errors %}
+                            <span>{{ err }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ reg_form.email(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ reg_form.password.label(class="form-control-label") }}
+                {% if reg_form.password.errors %}
+                    {{ reg_form.password(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for err in reg_form.password.errors %}
+                            <span>{{ err }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ reg_form.password(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ reg_form.password_confirm.label(class="form-control-label") }}
+                {% if reg_form.password_confirm.errors %}
+                    {{ reg_form.password_confirm(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for err in reg_form.password_confirm.errors %}
+                            <span>{{ err }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ reg_form.password_confirm(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ reg_form.submit(class="btn btn-lg btn-primary") }}
+            </div>
+        </form>
+        <div class="border-top pt-2">
+            <small class="text-muted">
+                <p>Have an account? <a href="/login">Log in</a></p>
+            </small>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
