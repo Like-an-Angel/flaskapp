@@ -9,7 +9,7 @@ def save_picture(pic_form):
     """
     random_hex = secrets.token_hex(8) # 8 bytes
 
-    _ , file_ext = os.path.splitext(pic_form.filename) # underscore for variable which we don't use by convention
+    _ , file_ext = os.path.splitext(pic_form.filename) # underscore for variable which we don't use, by convention
 
     picture_filename = random_hex + file_ext
     picture_path = os.path.join(current_app.root_path,"static/img/profile_pics", picture_filename)

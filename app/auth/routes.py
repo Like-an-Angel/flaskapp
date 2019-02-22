@@ -25,10 +25,10 @@ def register():
         db.session.commit()
 
         print(username, "has registered :3")
-        flash("Cool, you're done, {}!".format(username), "success") # success is for color name
+        flash("Cool, you're done, {}!".format(username), "success") # success is for color category name
         return redirect(url_for('auth.login')) # here name of the function
     else:
-        flash("Validate on submit is warning", "warning") # success is for color name
+        flash("Validate on submit is warning", "warning")
 
     return render_template("register.html", reg_form=form)
 
@@ -47,19 +47,14 @@ def login():
         if user and bcrypt.check_password_hash(user.password, password):
             login_user(user, remember=login_form.remember.data)
             print("Account", email, "has logged in :3")
-            flash("You're logged in, {}!".format(email), "success") # success is for color name
-            next_page = request.args.get('next') # get is same as ['next'] but get handles missing key -> returns None
+            flash("You're logged in, {}!".format(email), "success")
+            next_page = request.args.get('next') # .get returns same as ['next'] but .get handles missing key -> returns None
             return redirect(next_page) if next_page else redirect(url_for('posts.home'))
             # if next_page:
             #     # print(next_page)
             #     return redirect(next_page) # here name of the function
             # else:
             #     return redirect(url_for('posts.home'))
-        # else:
-        #     flash("Wrong credentials", "danger")
-    # else:
-    #     flash("Email or password is wrong", "warning")
-
     return render_template("login.html", login_form=login_form)
 
 @auth.route("/logout")
@@ -72,14 +67,12 @@ def sign_out():
 @login_required
 def account():
     form = UpdateAccount()
-    print("From after form")
     if request.method == "GET":
         form.username.data = current_user.username
         form.email.data  = current_user.email
-        print("From after form: GET")
-    print(form.validate_on_submit())
+    # print(form.validate_on_submit())
+    # flash(form.errors, "warning")
     if form.validate_on_submit():
-        print("From after form: Validated")
         current_user.username = form.username.data
         current_user.email = form.email.data
         pic_data = form.avatar.data

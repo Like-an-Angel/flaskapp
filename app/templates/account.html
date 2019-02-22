@@ -8,6 +8,7 @@
         </div>
         <div class="col-sm-6">
             <form method="POST" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
                 <div class="form-group">
                     <!-- We use here a BOOTSTRAP classes -->
                     {{ form.username.label(class="form-control-label") }}
@@ -49,7 +50,6 @@
                 </div>
             </form>
         </div>
-
     </div>
 </div>
 {% endblock content %}

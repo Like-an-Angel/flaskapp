@@ -20,14 +20,15 @@ class RegistrationForm(FlaskForm):
         EqualTo('password')]) # Name of the variable, not passing the whole object there
     submit = SubmitField("Register")
 
-# validate_username is reserverd. Name of parameter can be any but it encodes the field anyway
-    def validate_username(self, username): # here, username is a form field name
+# validate_username is reserverd for autovalidator, for field username
+# Name of parameter can be any but it encodes the field anyway
+    def validate_username(self, username): # here, username is a form field object
         user = User.query.filter_by(username=username.data).first()
         if user:
             raise ValidationError(f"User '{username.data}' already exists")
         return
 
-    def validate_email(self, email): # has to be 'email' for correct validation of field 'email'
+    def validate_email(self, email):
         lookup_email = User.query.filter_by(email=email.data).first()
         if lookup_email:
             raise ValidationError(f"Email '{email.data}' is already registered")
@@ -40,16 +41,14 @@ class LoginForm(FlaskForm):
     remember = BooleanField("Always Remember Me")
     submit = SubmitField("Log in")
 
-    def validate_email(self, email): # has to be 'email' for correct validation of field 'email'
+    def validate_email(self, email):
         lookup_email = User.query.filter_by(email=email.data).first()
         if not lookup_email:
             raise ValidationError(f"Email '{email.data}' is not registered")
         return
 
-    def validate_password(self, password): # has to be 'email' for correct validation of field 'email'
-        # print(self.email.data)
+    def validate_password(self, password):
         lookup_by_email = User.query.filter_by(email=self.email.data).first()
-        # print(lookup_by_email.password)
         print(bcrypt.check_password_hash(lookup_by_email.password, password.data))
         if lookup_by_email and not bcrypt.check_password_hash(lookup_by_email.password, password.data):
             raise ValidationError("Password is not correct!")
@@ -58,7 +57,7 @@ class LoginForm(FlaskForm):
 class UpdateAccount(FlaskForm):
     username = StringField("Username", validators=[
         DataRequired(),
-        Length(min=2, max=20, message="Must be more than 2 and less than 20 characters")]) # () because class needs to activate
+        Length(min=2, max=20, message="Must be more than 2 and less than 20 characters")])
     email = StringField("Email", validators=[
         DataRequired(),
         Email(),
@@ -66,19 +65,14 @@ class UpdateAccount(FlaskForm):
     avatar = FileField("Upload your avatar", validators=[FileAllowed(['jpg','png','jpeg', 'gif'])])
     submit = SubmitField("Update")
 
-    # validate_username is reserverd. Name of parameter can be any but it encodes the field anyway
-    def validate_username(self, username): # here, username is a form field name
-        print("From validate username")
-
+    def validate_username(self, username):
         if username.data!=current_user.username:
             user = User.query.filter_by(username=username.data).first()
             if user:
                 raise ValidationError(f"Username '{username.data}' is already occupied")
 
-    def validate_email(self, email): # has to be 'email' for correct validation of field 'email'
-        print("From validate email")
-
+    def validate_email(self, email):
         if email.data!=current_user.email:
             lookup_email = User.query.filter_by(email=email.data).first()
             if lookup_email:
-                raise ValidationError(f"Email address '{email.data}' is already occupied by another user")
+                raise ValidationError(f"Email address '{email.data}' is registered for another account")
