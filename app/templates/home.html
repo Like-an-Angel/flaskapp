@@ -2,4 +2,23 @@
 {% block content %}
     <h1>Welcome to my first website</h1>
     <!-- <p style="color: red">Now, get out!</p> -->
+    {% if allPosts %}
+        {% for i in range(allPosts|length) %}
+            <div class="col-sm-10 mx-auto bd p-3">
+                <div class="text-info col-sm-5">
+                    <h2>{{ allPosts[i].title }}</h2>
+                    <h5>{{ allPosts[i].subtitle }}</h5>
+                </div>
+                <p>{{ allPosts[i].content }}</p>
+                <p>{{ allPosts[i].author.username }} @ {{ allPosts[i].posted_date }}</p>
+                {% if current_user.id==allPosts[i].author.id %}
+                    <button type="button" onclick="window.location.href='post-editor/{{allPosts[i].id}}';">Edit post</button> <button type="button" onclick="window.location.href='post-delete/{{allPosts[i].id}}';">Delete post</button>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <h2>No Posts</h2>
+    {% endif %}
 {% endblock content %}
+<!-- {{ editpostbutton.submit(class="btn btn-lg btn-primary") }} -->
+<!-- <button type="button" onclick="window.location.href='{{ url_for( 'posts.post_editor', post=post) }}';">Edit post</button> <button type="button" onclick="window.location.href='{{ url_for( 'auth.account') }}';">Delete post</button> -->

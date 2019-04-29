@@ -1,13 +1,13 @@
-# python
-# import secrets
-# secrets.token_hex(16) <- generates a key string
-# app.config["SECRET_KEY"] = '23c3f0c3963ae910e959ab6a4ae6ce46' # can be any string
-# app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///flaskapp.db" # For sqlite has to be .db
-# app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 import os
 
-# SECRET_KEY = '23c3f0c3963ae910e959ab6a4ae6ce46'
 SECRET_KEY = os.environ.get("SECRET_KEY")
-SQLALCHEMY_DATABASE_URI = "sqlite:///flaskapp.db"
+SQLALCHEMY_DATABASE_URI = f'sqlite:///{os.path.join(os.getcwd(),"flaskapp.db")}'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 DEBUG = True
+
+MAIL_SERVER = 'smtp.googlemail.com'
+MAIL_PORT = '587'
+MAIL_USE_TLS = True
+
+MAIL_USERNAME = os.environ.get("MAIL_USERNAME")
+MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")

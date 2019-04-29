@@ -76,3 +76,22 @@ class UpdateAccount(FlaskForm):
             lookup_email = User.query.filter_by(email=email.data).first()
             if lookup_email:
                 raise ValidationError(f"Email address '{email.data}' is registered for another account")
+
+class ResetRequestForm(FlaskForm):
+    email = StringField("Email", validators=[
+        DataRequired(),
+        Email(),
+        Length(min=2, max=30, message="Must be more than 2 and less than 30 characters")])
+    submit = SubmitField("Send request")
+
+    def validate_email(self, email):
+        lookup_email = User.query.filter_by(email=email.data).first()
+        if not lookup_email: # or if lookup_email is None
+            raise ValidationError(f"Email address '{email.data}' is not registered")
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField("Password", validators=[DataRequired()])
+    password_confirm = PasswordField("Confirm Password", validators=[
+        DataRequired(),
+        EqualTo('password')]) # Name of the variable, not passing the whole object there
+    submit = SubmitField("Change Password")

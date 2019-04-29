@@ -1,10 +1,11 @@
 from app.auth import auth
 from flask import render_template, redirect, url_for, flash, request
-from app.auth.forms import RegistrationForm, LoginForm, UpdateAccount
+from app.auth.forms import (RegistrationForm, LoginForm, UpdateAccount,
+                            ResetRequestForm, ResetPasswordForm)
 from app import bcrypt, db
 from app.auth.models import User
 from flask_login import login_user, current_user, logout_user, login_required
-from app.auth.utils import save_picture
+from app.auth.utils import save_picture, send_reset_email
 
 @auth.route("/register", methods=["GET","POST"])
 def register():
@@ -27,8 +28,6 @@ def register():
         print(username, "has registered :3")
         flash("Cool, you're done, {}!".format(username), "success") # success is for color category name
         return redirect(url_for('auth.login')) # here name of the function
-    else:
-        flash("Validate on submit is warning", "warning")
 
     return render_template("register.html", reg_form=form)
 
@@ -86,3 +85,32 @@ def account():
     #     flash("You are not logged in","warning")
     #     return redirect(url_for('posts.home'))
     return render_template("account.html", form=form)
+
+@auth.route("/reset-request", methods=["GET", "POST"])
+def reset_request():
+    if current_user.is_authenticated:
+        return redirect(url_for("posts.home"))
+    form = ResetRequestForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        send_reset_email(user)
+        flash("Email with reset password instructions is sent", "info")
+        return redirect(url_for("auth.login"))
+    return render_template("reset_request.html", form=form)
+
+@auth.route("/reset-password/<token>", methods=["GET", "POST"])
+def reset_password(token): # argument from url is passed to function
+    if current_user.is_authenticated:
+        return redirect(url_for("posts.home"))
+    user = User.verify_reset_token(token)
+    if not user:
+        flash("The link has been expired. Make a new request", "warning")
+        return redirect(url_for('auth.reset_request'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user.password = hashed_password
+        db.session.commit()
+        flash("Password has been successfully changed", "success")
+        return redirect(url_for('auth.login'))
+    return render_template("reset_password.html", form=form)

@@ -1,4 +1,7 @@
 __pycache__
 venv_flask
 *.txt
-help
+profile_pics
+manage.py
+migrations
+*.db
